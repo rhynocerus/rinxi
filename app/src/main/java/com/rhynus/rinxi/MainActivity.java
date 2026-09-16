@@ -1,958 +1,835 @@
 package com.rhynus.rinxi;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 
-import android.content.ClipboardManager;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
-import android.os.StatFs;
 
-import android.system.Os;
-import android.system.StructUtsname;
-
-import android.util.DisplayMetrics;
-
-import android.view.Display;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.inputmethod.EditorInfo;
+
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-
-import java.util.Collections;
-import java.util.List;
+import com.rhynus.rinxi.shell.RinxiShell;
+import com.rhynus.rinxi.ui.RinxiColors;
 
 public class MainActivity extends Activity {
 
     private TextView terminal;
+    private EditText commandInput;
+    private ScrollView terminalScroll;
 
-    private static final int BG =
-            Color.rgb(5, 10, 8);
+    private Typeface ubuntu;
+    private Typeface ubuntuMono;
 
-    private static final int PANEL =
-            Color.rgb(10, 20, 15);
+    private RinxiShell shell;
 
-    private static final int GREEN =
-            Color.rgb(100, 255, 150);
-
-    private static final int TEXT =
-            Color.rgb(210, 255, 220);
-
-    private static final int DIM =
-            Color.rgb(130, 170, 140);
-
+    private String prompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(BG);
-        getWindow().setNavigationBarColor(BG);
+        getWindow().setStatusBarColor(
+                RinxiColors.BG
+        );
+
+        getWindow().setNavigationBarColor(
+                RinxiColors.BG
+        );
+
+        ubuntu =
+                getResources()
+                        .getFont(
+                                R.font.ubuntu
+                        );
+
+        ubuntuMono =
+                getResources()
+                        .getFont(
+                                R.font.ubuntu_mono
+                        );
+
+        shell =
+                new RinxiShell(this);
+
+        prompt =
+                "rinxi@"
+                + Build.MODEL
+                + ":~$ ";
 
         createInterface();
 
         terminal.setText(
-            "\nRINXI ready.\n\n" +
-            "rhynus@android:~$ waiting_for_probe\n"
+                "RINXI SYSTEM CONSOLE v0.2\n"
+                + "LOCAL // NO ROOT // NO INTERNET\n"
+                + "\n"
+                + "Type 'help' or press FULL.\n"
+                + "\n"
+                + prompt
         );
 
         showIntro();
     }
 
-
     private void createInterface() {
 
-        int pad = dp(16);
+        LinearLayout root =
+                new LinearLayout(this);
 
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(pad, pad, pad, pad);
-        root.setBackgroundColor(BG);
+        root.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        root.setBackgroundColor(
+                RinxiColors.BG
+        );
+
+        root.setPadding(
+                dp(14),
+                dp(10),
+                dp(14),
+                dp(10)
+        );
+
         root.setFitsSystemWindows(true);
 
-
-        TextView title = new TextView(this);
-        title.setText("RINXI");
-        title.setTextSize(30);
-        title.setTextColor(GREEN);
-        title.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
-
-        root.addView(title);
-
-
-        TextView subtitle = new TextView(this);
-        subtitle.setText("RHYNUS SYSTEM PROBE // v0.1");
-        subtitle.setTextSize(12);
-        subtitle.setTextColor(DIM);
-        subtitle.setTypeface(Typeface.MONOSPACE);
-
-        root.addView(subtitle);
-
-
-        TextView privacy = new TextView(this);
-        privacy.setText(
-            "\nLOCAL DIAGNOSTICS\n" +
-            "NO ROOT  •  NO INTERNET PERMISSION\n"
+        root.addView(
+                createHeader()
         );
-        privacy.setTextColor(TEXT);
-        privacy.setTextSize(12);
-        privacy.setTypeface(Typeface.MONOSPACE);
-
-        root.addView(privacy);
-
-
-        LinearLayout buttons = new LinearLayout(this);
-        buttons.setOrientation(LinearLayout.HORIZONTAL);
-        buttons.setGravity(Gravity.CENTER_VERTICAL);
-
-
-        Button scan = new Button(this);
-        scan.setText("SCAN");
-
-        scan.setOnClickListener(v -> runProbe());
-
-
-        Button copy = new Button(this);
-        copy.setText("COPY");
-
-        copy.setOnClickListener(v -> copyReport());
-
-
-        buttons.addView(
-            scan,
-            new LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1
-            )
-        );
-
-        buttons.addView(
-            copy,
-            new LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1
-            )
-        );
-
-        root.addView(buttons);
-
-
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(PANEL);
-
-
-        terminal = new TextView(this);
-
-        terminal.setPadding(
-            dp(12),
-            dp(12),
-            dp(12),
-            dp(24)
-        );
-
-        terminal.setTypeface(Typeface.MONOSPACE);
-        terminal.setTextSize(12);
-        terminal.setTextColor(TEXT);
-        terminal.setTextIsSelectable(true);
-
-        scroll.addView(terminal);
-
 
         root.addView(
-            scroll,
-            new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                0,
-                1
-            )
+                createCommandBar()
         );
 
+        root.addView(
+                createUtilityBar()
+        );
+
+        terminalScroll =
+                new ScrollView(this);
+
+        terminalScroll.setFillViewport(true);
+
+        terminal =
+                new TextView(this);
+
+        terminal.setTypeface(
+                ubuntuMono
+        );
+
+        terminal.setTextSize(12);
+
+        terminal.setTextColor(
+                RinxiColors.TEXT
+        );
+
+        terminal.setTextIsSelectable(true);
+
+        terminal.setPadding(
+                dp(12),
+                dp(12),
+                dp(12),
+                dp(24)
+        );
+
+        terminal.setLineSpacing(
+                0,
+                1.08f
+        );
+
+        GradientDrawable terminalBg =
+                new GradientDrawable();
+
+        terminalBg.setColor(
+                RinxiColors.PANEL
+        );
+
+        terminalBg.setStroke(
+                dp(1),
+                RinxiColors.GRID
+        );
+
+        terminal.setBackground(
+                terminalBg
+        );
+
+        terminalScroll.addView(
+                terminal,
+                new ScrollView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+        );
+
+        root.addView(
+                terminalScroll,
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        0,
+                        1
+                )
+        );
+
+        root.addView(
+                createInputBar()
+        );
 
         setContentView(root);
     }
 
+    private View createHeader() {
+
+        LinearLayout header =
+                new LinearLayout(this);
+
+        header.setOrientation(
+                LinearLayout.HORIZONTAL
+        );
+
+        header.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
+
+        LinearLayout titles =
+                new LinearLayout(this);
+
+        titles.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        TextView title =
+                new TextView(this);
+
+        title.setText("RINXI");
+
+        title.setTypeface(
+                ubuntu,
+                Typeface.BOLD
+        );
+
+        title.setTextSize(29);
+
+        title.setTextColor(
+                RinxiColors.CYAN
+        );
+
+        TextView subtitle =
+                new TextView(this);
+
+        subtitle.setText(
+                "SYSTEM PROBE // v0.2"
+        );
+
+        subtitle.setTypeface(
+                ubuntu
+        );
+
+        subtitle.setTextSize(11);
+
+        subtitle.setTextColor(
+                RinxiColors.MUTED
+        );
+
+        titles.addView(title);
+        titles.addView(subtitle);
+
+        header.addView(
+                titles,
+                new LinearLayout.LayoutParams(
+                        0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        1
+                )
+        );
+
+        TextView local =
+                new TextView(this);
+
+        local.setText("● LOCAL");
+
+        local.setTypeface(
+                ubuntuMono,
+                Typeface.BOLD
+        );
+
+        local.setTextSize(11);
+
+        local.setTextColor(
+                RinxiColors.GREEN
+        );
+
+        header.addView(local);
+
+        return header;
+    }
+
+    private View createCommandBar() {
+
+        HorizontalScrollView hsv =
+                new HorizontalScrollView(this);
+
+        hsv.setHorizontalScrollBarEnabled(
+                false
+        );
+
+        LinearLayout row =
+                new LinearLayout(this);
+
+        row.setOrientation(
+                LinearLayout.HORIZONTAL
+        );
+
+        row.setPadding(
+                0,
+                dp(10),
+                0,
+                dp(5)
+        );
+
+        addCommandButton(
+                row,
+                "FULL",
+                "rinxi"
+        );
+
+        addCommandButton(
+                row,
+                "SYS",
+                "system"
+        );
+
+        addCommandButton(
+                row,
+                "CPU",
+                "cpu"
+        );
+
+        addCommandButton(
+                row,
+                "MEM",
+                "free -h"
+        );
+
+        addCommandButton(
+                row,
+                "DISK",
+                "df -h"
+        );
+
+        addCommandButton(
+                row,
+                "NET",
+                "net"
+        );
+
+        addCommandButton(
+                row,
+                "SEC",
+                "security"
+        );
+
+        addCommandButton(
+                row,
+                "SNS",
+                "sensors"
+        );
+
+        addCommandButton(
+                row,
+                "JSON",
+                "json"
+        );
+
+        hsv.addView(row);
+
+        return hsv;
+    }
+
+    private View createUtilityBar() {
+
+        LinearLayout row =
+                new LinearLayout(this);
+
+        row.setOrientation(
+                LinearLayout.HORIZONTAL
+        );
+
+        row.setPadding(
+                0,
+                0,
+                0,
+                dp(6)
+        );
+
+        Button copy =
+                utilityButton("COPY");
+
+        copy.setOnClickListener(
+                v -> copyTerminal()
+        );
+
+        Button share =
+                utilityButton("SHARE");
+
+        share.setOnClickListener(
+                v -> shareTerminal()
+        );
+
+        Button help =
+                utilityButton("HELP");
+
+        help.setOnClickListener(
+                v -> executeCommand("help")
+        );
+
+        Button clear =
+                utilityButton("CLEAR");
+
+        clear.setOnClickListener(
+                v -> executeCommand("clear")
+        );
+
+        row.addView(copy);
+        row.addView(share);
+        row.addView(help);
+        row.addView(clear);
+
+        return row;
+    }
+
+    private View createInputBar() {
+
+        LinearLayout row =
+                new LinearLayout(this);
+
+        row.setOrientation(
+                LinearLayout.HORIZONTAL
+        );
+
+        row.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
+
+        row.setPadding(
+                0,
+                dp(8),
+                0,
+                0
+        );
+
+        TextView promptView =
+                new TextView(this);
+
+        promptView.setText("$");
+
+        promptView.setTypeface(
+                ubuntuMono,
+                Typeface.BOLD
+        );
+
+        promptView.setTextSize(15);
+
+        promptView.setTextColor(
+                RinxiColors.GREEN
+        );
+
+        row.addView(promptView);
+
+        commandInput =
+                new EditText(this);
+
+        commandInput.setSingleLine(true);
+
+        commandInput.setTypeface(
+                ubuntuMono
+        );
+
+        commandInput.setTextSize(14);
+
+        commandInput.setTextColor(
+                RinxiColors.TEXT
+        );
+
+        commandInput.setHintTextColor(
+                RinxiColors.MUTED
+        );
+
+        commandInput.setHint(
+                " command"
+        );
+
+        commandInput.setBackgroundColor(
+                RinxiColors.PANEL_ALT
+        );
+
+        commandInput.setPadding(
+                dp(8),
+                dp(7),
+                dp(8),
+                dp(7)
+        );
+
+        commandInput.setImeOptions(
+                EditorInfo.IME_ACTION_GO
+        );
+
+        commandInput.setOnEditorActionListener(
+                (v, actionId, event) -> {
+
+                    if (
+                            actionId
+                                    == EditorInfo.IME_ACTION_GO
+                    ) {
+
+                        executeTypedCommand();
+
+                        return true;
+                    }
+
+                    return false;
+                }
+        );
+
+        row.addView(
+                commandInput,
+                new LinearLayout.LayoutParams(
+                        0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        1
+                )
+        );
+
+        Button exec =
+                utilityButton("EXEC");
+
+        exec.setTextColor(
+                RinxiColors.CYAN
+        );
+
+        exec.setOnClickListener(
+                v -> executeTypedCommand()
+        );
+
+        row.addView(exec);
+
+        return row;
+    }
+
+    private void addCommandButton(
+            LinearLayout row,
+            String label,
+            String command
+    ) {
+
+        Button button =
+                new Button(this);
+
+        button.setText(label);
+
+        button.setAllCaps(false);
+
+        button.setTypeface(
+                ubuntuMono,
+                Typeface.BOLD
+        );
+
+        button.setTextSize(11);
+
+        button.setTextColor(
+                RinxiColors.CYAN
+        );
+
+        button.setMinHeight(0);
+        button.setMinWidth(0);
+
+        button.setPadding(
+                dp(12),
+                dp(7),
+                dp(12),
+                dp(7)
+        );
+
+        GradientDrawable bg =
+                new GradientDrawable();
+
+        bg.setColor(
+                RinxiColors.PANEL
+        );
+
+        bg.setStroke(
+                dp(1),
+                RinxiColors.GRID
+        );
+
+        bg.setCornerRadius(
+                dp(2)
+        );
+
+        button.setBackground(bg);
+
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+
+        params.setMargins(
+                0,
+                0,
+                dp(5),
+                0
+        );
+
+        button.setLayoutParams(params);
+
+        button.setOnClickListener(
+                v -> executeCommand(command)
+        );
+
+        row.addView(button);
+    }
+
+    private Button utilityButton(
+            String label
+    ) {
+
+        Button button =
+                new Button(this);
+
+        button.setText(label);
+
+        button.setAllCaps(false);
+
+        button.setTypeface(
+                ubuntuMono
+        );
+
+        button.setTextSize(10);
+
+        button.setTextColor(
+                RinxiColors.MUTED
+        );
+
+        button.setMinHeight(0);
+        button.setMinWidth(0);
+
+        button.setPadding(
+                dp(9),
+                dp(4),
+                dp(9),
+                dp(4)
+        );
+
+        GradientDrawable bg =
+                new GradientDrawable();
+
+        bg.setColor(
+                RinxiColors.PANEL_ALT
+        );
+
+        bg.setStroke(
+                dp(1),
+                RinxiColors.GRID
+        );
+
+        button.setBackground(bg);
+
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        1
+                );
+
+        params.setMargins(
+                0,
+                0,
+                dp(4),
+                0
+        );
+
+        button.setLayoutParams(params);
+
+        return button;
+    }
+
+    private void executeTypedCommand() {
+
+        String command =
+                commandInput.getText()
+                        .toString();
+
+        commandInput.setText("");
+
+        executeCommand(command);
+    }
+
+    private void executeCommand(
+            String command
+    ) {
+
+        if (
+                command == null
+                || command.trim().isEmpty()
+        ) {
+
+            return;
+        }
+
+        RinxiShell.Result result =
+                shell.execute(command);
+
+        if (result.clear) {
+
+            terminal.setText(
+                    prompt
+            );
+
+            return;
+        }
+
+        String current =
+                terminal.getText()
+                        .toString();
+
+        if (
+                !current.endsWith(prompt)
+        ) {
+
+            current += "\n" + prompt;
+        }
+
+        current += command + "\n";
+
+        current += result.text;
+
+        if (!current.endsWith("\n")) {
+            current += "\n";
+        }
+
+        current += "\n" + prompt;
+
+        terminal.setText(current);
+
+        scrollToBottom();
+    }
+
+    private void scrollToBottom() {
+
+        terminalScroll.post(
+                () -> terminalScroll.fullScroll(
+                        View.FOCUS_DOWN
+                )
+        );
+    }
+
+    private void copyTerminal() {
+
+        ClipboardManager clipboard =
+                (ClipboardManager)
+                        getSystemService(
+                                Context.CLIPBOARD_SERVICE
+                        );
+
+        clipboard.setPrimaryClip(
+                ClipData.newPlainText(
+                        "RINXI terminal",
+                        terminal.getText()
+                )
+        );
+
+        Toast.makeText(
+                this,
+                "RINXI output copied",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    private void shareTerminal() {
+
+        Intent share =
+                new Intent(
+                        Intent.ACTION_SEND
+                );
+
+        share.setType(
+                "text/plain"
+        );
+
+        share.putExtra(
+                Intent.EXTRA_SUBJECT,
+                "RINXI system report"
+        );
+
+        share.putExtra(
+                Intent.EXTRA_TEXT,
+                terminal.getText()
+                        .toString()
+        );
+
+        startActivity(
+                Intent.createChooser(
+                        share,
+                        "Share RINXI output"
+                )
+        );
+    }
 
     private void showIntro() {
 
         new AlertDialog.Builder(this)
-            .setTitle("RINXI :: LOCAL SYSTEM PROBE")
-            .setMessage(
-                "RINXI inspects information Android makes available " +
-                "to a normal application.\n\n" +
-
-                "No root access.\n" +
-                "No data is transmitted.\n" +
-                "No INTERNET permission.\n\n" +
-
-                "Unavailable information will be marked as " +
-                "RESTRICTED rather than guessed."
-            )
-            .setNegativeButton(
-                "CANCEL",
-                null
-            )
-            .setPositiveButton(
-                "RUN BASIC SCAN",
-                (dialog, which) -> runProbe()
-            )
-            .show();
-    }
-
-
-    private void runProbe() {
-
-        StringBuilder r = new StringBuilder();
-
-        r.append(
-            "========================================\n"
-        );
-        r.append(
-            "       RINXI :: SYSTEM PROBE v0.1\n"
-        );
-        r.append(
-            "========================================\n\n"
-        );
-
-
-        section(r, "IDENTITY");
-
-        line(r, "Manufacturer", Build.MANUFACTURER);
-        line(r, "Brand", Build.BRAND);
-        line(r, "Model", Build.MODEL);
-        line(r, "Device", Build.DEVICE);
-        line(r, "Product", Build.PRODUCT);
-        line(r, "Hardware", Build.HARDWARE);
-
-
-        section(r, "ANDROID");
-
-        line(
-            r,
-            "Android",
-            Build.VERSION.RELEASE
-        );
-
-        line(
-            r,
-            "API",
-            String.valueOf(Build.VERSION.SDK_INT)
-        );
-
-        line(
-            r,
-            "Security patch",
-            Build.VERSION.SECURITY_PATCH
-        );
-
-        line(
-            r,
-            "Build ID",
-            Build.ID
-        );
-
-        line(
-            r,
-            "Fingerprint",
-            Build.FINGERPRINT
-        );
-
-
-        section(r, "SOC / CPU");
-
-        if (Build.VERSION.SDK_INT >= 31) {
-
-            line(
-                r,
-                "SoC model",
-                Build.SOC_MODEL
-            );
-
-            line(
-                r,
-                "SoC maker",
-                Build.SOC_MANUFACTURER
-            );
-
-        } else {
-
-            line(
-                r,
-                "SoC",
-                "[UNAVAILABLE API]"
-            );
-        }
-
-        line(
-            r,
-            "CPU cores",
-            String.valueOf(
-                Runtime.getRuntime().availableProcessors()
-            )
-        );
-
-        line(
-            r,
-            "ABI",
-            String.join(", ", Build.SUPPORTED_ABIS)
-        );
-
-
-        section(r, "KERNEL");
-
-        try {
-
-            StructUtsname u = Os.uname();
-
-            line(
-                r,
-                "Kernel",
-                u.sysname + " " + u.release
-            );
-
-            line(
-                r,
-                "Machine",
-                u.machine
-            );
-
-            line(
-                r,
-                "Node",
-                u.nodename
-            );
-
-        } catch (Exception e) {
-
-            line(
-                r,
-                "Kernel",
-                "[RESTRICTED]"
-            );
-        }
-
-
-        section(r, "MEMORY");
-
-        ActivityManager am =
-            (ActivityManager)
-                getSystemService(ACTIVITY_SERVICE);
-
-        ActivityManager.MemoryInfo mi =
-            new ActivityManager.MemoryInfo();
-
-        am.getMemoryInfo(mi);
-
-        line(
-            r,
-            "Total",
-            humanBytes(mi.totalMem)
-        );
-
-        line(
-            r,
-            "Available",
-            humanBytes(mi.availMem)
-        );
-
-        line(
-            r,
-            "Threshold",
-            humanBytes(mi.threshold)
-        );
-
-        line(
-            r,
-            "Low memory",
-            String.valueOf(mi.lowMemory)
-        );
-
-
-        section(r, "STORAGE");
-
-        File data =
-            getFilesDir();
-
-        StatFs fs =
-            new StatFs(data.getAbsolutePath());
-
-        line(
-            r,
-            "Total",
-            humanBytes(fs.getTotalBytes())
-        );
-
-        line(
-            r,
-            "Available",
-            humanBytes(fs.getAvailableBytes())
-        );
-
-        line(
-            r,
-            "App path",
-            data.getAbsolutePath()
-        );
-
-
-        section(r, "DISPLAY");
-
-        Display display =
-            getWindowManager().getDefaultDisplay();
-
-        Display.Mode mode =
-            display.getMode();
-
-        line(
-            r,
-            "Physical",
-            mode.getPhysicalWidth()
-                + "x"
-                + mode.getPhysicalHeight()
-        );
-
-        line(
-            r,
-            "Refresh",
-            String.format(
-                "%.2f Hz",
-                mode.getRefreshRate()
-            )
-        );
-
-        DisplayMetrics dm =
-            getResources().getDisplayMetrics();
-
-        line(
-            r,
-            "Density DPI",
-            String.valueOf(dm.densityDpi)
-        );
-
-        line(
-            r,
-            "Density scale",
-            String.valueOf(dm.density)
-        );
-
-
-        section(r, "BATTERY");
-
-        Intent battery =
-            registerReceiver(
-                null,
-                new IntentFilter(
-                    Intent.ACTION_BATTERY_CHANGED
+                .setTitle(
+                        "RINXI // LOCAL PROBE"
                 )
-            );
-
-        if (battery != null) {
-
-            int level =
-                battery.getIntExtra(
-                    BatteryManager.EXTRA_LEVEL,
-                    -1
-                );
-
-            int scale =
-                battery.getIntExtra(
-                    BatteryManager.EXTRA_SCALE,
-                    100
-                );
-
-            float percent =
-                scale > 0
-                    ? level * 100f / scale
-                    : -1;
-
-            line(
-                r,
-                "Level",
-                String.format(
-                    "%.0f%%",
-                    percent
+                .setMessage(
+                        "System information is collected locally.\n\n"
+                        + "NO ROOT\n"
+                        + "NO INTERNET PERMISSION\n"
+                        + "API-BACKED SAFE SHELL\n\n"
+                        + "Restricted information is reported, "
+                        + "never guessed."
                 )
-            );
-
-            int temp =
-                battery.getIntExtra(
-                    BatteryManager.EXTRA_TEMPERATURE,
-                    -1
-                );
-
-            if (temp >= 0) {
-                line(
-                    r,
-                    "Temperature",
-                    String.format(
-                        "%.1f °C",
-                        temp / 10f
-                    )
-                );
-            }
-
-            int voltage =
-                battery.getIntExtra(
-                    BatteryManager.EXTRA_VOLTAGE,
-                    -1
-                );
-
-            if (voltage >= 0) {
-                line(
-                    r,
-                    "Voltage",
-                    voltage + " mV"
-                );
-            }
-
-            int status =
-                battery.getIntExtra(
-                    BatteryManager.EXTRA_STATUS,
-                    -1
-                );
-
-            line(
-                r,
-                "Status",
-                batteryStatus(status)
-            );
-        }
-
-
-        section(r, "NETWORK");
-
-        ConnectivityManager cm =
-            (ConnectivityManager)
-                getSystemService(
-                    Context.CONNECTIVITY_SERVICE
-                );
-
-        try {
-
-            Network active =
-                cm.getActiveNetwork();
-
-            NetworkCapabilities caps =
-                cm.getNetworkCapabilities(active);
-
-            if (caps == null) {
-
-                line(
-                    r,
-                    "Transport",
-                    "OFFLINE / UNKNOWN"
-                );
-
-            } else if (
-                caps.hasTransport(
-                    NetworkCapabilities.TRANSPORT_WIFI
+                .setNegativeButton(
+                        "TERMINAL",
+                        null
                 )
-            ) {
-
-                line(
-                    r,
-                    "Transport",
-                    "Wi-Fi"
-                );
-
-            } else if (
-                caps.hasTransport(
-                    NetworkCapabilities.TRANSPORT_CELLULAR
+                .setPositiveButton(
+                        "FULL PROBE",
+                        (dialog, which) ->
+                                executeCommand(
+                                        "rinxi"
+                                )
                 )
-            ) {
-
-                line(
-                    r,
-                    "Transport",
-                    "Cellular"
-                );
-
-            } else if (
-                caps.hasTransport(
-                    NetworkCapabilities.TRANSPORT_VPN
-                )
-            ) {
-
-                line(
-                    r,
-                    "Transport",
-                    "VPN"
-                );
-
-            } else {
-
-                line(
-                    r,
-                    "Transport",
-                    "Other"
-                );
-            }
-
-        } catch (Exception e) {
-
-            line(
-                r,
-                "Transport",
-                "[RESTRICTED]"
-            );
-        }
-
-
-        try {
-
-            List<NetworkInterface> interfaces =
-                Collections.list(
-                    NetworkInterface.getNetworkInterfaces()
-                );
-
-            for (
-                NetworkInterface iface :
-                interfaces
-            ) {
-
-                if (!iface.isUp()) {
-                    continue;
-                }
-
-                List<InetAddress> addresses =
-                    Collections.list(
-                        iface.getInetAddresses()
-                    );
-
-                for (
-                    InetAddress addr :
-                    addresses
-                ) {
-
-                    if (
-                        !addr.isLoopbackAddress()
-                    ) {
-
-                        line(
-                            r,
-                            iface.getName(),
-                            addr.getHostAddress()
-                        );
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-
-            line(
-                r,
-                "Interfaces",
-                "[RESTRICTED]"
-            );
-        }
-
-
-        section(r, "SENSORS");
-
-        SensorManager sm =
-            (SensorManager)
-                getSystemService(
-                    SENSOR_SERVICE
-                );
-
-        List<Sensor> sensors =
-            sm.getSensorList(
-                Sensor.TYPE_ALL
-            );
-
-        line(
-            r,
-            "Detected",
-            String.valueOf(
-                sensors.size()
-            )
-        );
-
-        sensorStatus(
-            r,
-            sm,
-            Sensor.TYPE_ACCELEROMETER,
-            "Accelerometer"
-        );
-
-        sensorStatus(
-            r,
-            sm,
-            Sensor.TYPE_GYROSCOPE,
-            "Gyroscope"
-        );
-
-        sensorStatus(
-            r,
-            sm,
-            Sensor.TYPE_MAGNETIC_FIELD,
-            "Magnetometer"
-        );
-
-        sensorStatus(
-            r,
-            sm,
-            Sensor.TYPE_PROXIMITY,
-            "Proximity"
-        );
-
-        sensorStatus(
-            r,
-            sm,
-            Sensor.TYPE_LIGHT,
-            "Light"
-        );
-
-
-        section(r, "APP SANDBOX");
-
-        line(
-            r,
-            "Package",
-            getPackageName()
-        );
-
-        line(
-            r,
-            "UID",
-            String.valueOf(
-                Process.myUid()
-            )
-        );
-
-        line(
-            r,
-            "Root",
-            "NO"
-        );
-
-        line(
-            r,
-            "Internet permission",
-            "NOT DECLARED"
-        );
-
-
-        section(r, "RESTRICTED / PROTECTED");
-
-        try {
-
-            line(
-                r,
-                "Hardware serial",
-                Build.getSerial()
-            );
-
-        } catch (
-            SecurityException e
-        ) {
-
-            line(
-                r,
-                "Hardware serial",
-                "[RESTRICTED]"
-            );
-        }
-
-        line(
-            r,
-            "IMEI",
-            "[NOT REQUESTED]"
-        );
-
-        line(
-            r,
-            "Verified Boot",
-            "[PRIVILEGED PROPERTY]"
-        );
-
-        line(
-            r,
-            "Bootloader state",
-            "[PRIVILEGED PROPERTY]"
-        );
-
-        line(
-            r,
-            "Full app inventory",
-            "[ANDROID LIMITED]"
-        );
-
-        line(
-            r,
-            "Host USBGuard",
-            "[OUTSIDE DEVICE]"
-        );
-
-
-        r.append(
-            "\n========================================\n"
-        );
-
-        r.append(
-            "SCAN COMPLETE\n"
-        );
-
-        r.append(
-            "========================================\n"
-        );
-
-
-        terminal.setText(r.toString());
+                .show();
     }
 
-
-    private void section(
-        StringBuilder r,
-        String name
-    ) {
-
-        r.append("\n[ ")
-         .append(name)
-         .append(" ]\n");
-    }
-
-
-    private void line(
-        StringBuilder r,
-        String key,
-        String value
-    ) {
-
-        r.append(
-            String.format(
-                "%-18s : %s\n",
-                key,
-                value == null
-                    ? "[UNKNOWN]"
-                    : value
-            )
-        );
-    }
-
-
-    private void sensorStatus(
-        StringBuilder r,
-        SensorManager sm,
-        int type,
-        String name
-    ) {
-
-        Sensor s =
-            sm.getDefaultSensor(type);
-
-        line(
-            r,
-            name,
-            s == null
-                ? "[NOT FOUND]"
-                : "[OK] " + s.getName()
-        );
-    }
-
-
-    private String humanBytes(
-        long bytes
-    ) {
-
-        double gib =
-            bytes /
-            1024.0 /
-            1024.0 /
-            1024.0;
-
-        return String.format(
-            "%.2f GiB",
-            gib
-        );
-    }
-
-
-    private String batteryStatus(
-        int status
-    ) {
-
-        switch (status) {
-
-            case BatteryManager.BATTERY_STATUS_CHARGING:
-                return "CHARGING";
-
-            case BatteryManager.BATTERY_STATUS_DISCHARGING:
-                return "DISCHARGING";
-
-            case BatteryManager.BATTERY_STATUS_FULL:
-                return "FULL";
-
-            case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
-                return "NOT CHARGING";
-
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-
-    private void copyReport() {
-
-        ClipboardManager clipboard =
-            (ClipboardManager)
-                getSystemService(
-                    Context.CLIPBOARD_SERVICE
-                );
-
-        ClipData clip =
-            ClipData.newPlainText(
-                "RINXI report",
-                terminal.getText()
-            );
-
-        clipboard.setPrimaryClip(clip);
-
-        Toast.makeText(
-            this,
-            "RINXI report copied",
-            Toast.LENGTH_SHORT
-        ).show();
-    }
-
-
-    private int dp(
-        int value
-    ) {
+    private int dp(int value) {
 
         return (int) (
-            value *
-            getResources()
-                .getDisplayMetrics()
-                .density
+                value
+                        * getResources()
+                        .getDisplayMetrics()
+                        .density
         );
     }
 }
