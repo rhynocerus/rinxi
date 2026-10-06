@@ -28,6 +28,7 @@ Al terminar el ejercicio, la persona debería poder:
 - Instrucción guiada para probar `nmap -sV demo.local`.
 - Laboratorio RINXI con botones para ejecutar ejemplos, solicitar ayuda, pedir una pista y limpiar la salida.
 - Recordatorio de utilizar escaneos reales únicamente sobre sistemas propios o con autorización expresa.
+- Galería con dos ilustraciones originales para acompañar el artículo y la publicación en redes.
 
 ## Funcionamiento de la terminal
 
@@ -50,6 +51,15 @@ Para la consulta didáctica, la salida fija muestra:
 
 El resultado es contenido predefinido para enseñar a leer una tabla. No depende de una conexión a una máquina real.
 
+## Recursos visuales
+
+Las imágenes están disponibles en la página y se pueden descargar en PNG para reutilizarlas en publicaciones:
+
+1. **Red y puertos:** https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/assets/rinxi-post-red-puertos.png
+2. **Puertos abiertos y cerrados:** https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/assets/rinxi-post-puertos-estados.png
+
+Las ilustraciones emplean la identidad visual RINXI: fondo oscuro, acentos verde menta y referencias visuales a redes y puertos.
+
 ## Límites y seguridad
 
 - La página no ejecuta Nmap, una shell ni comandos del sistema.
@@ -66,8 +76,9 @@ La aplicación Android y este laboratorio web son superficies separadas que comp
 ## Validación realizada
 
 - El documento HTML se analizó con el parser de Python sin errores de estructura.
-- Se revisaron las rutas de la imagen de marca y del favicon.
-- El empaquetado del Site se validó y la versión 1 se publicó correctamente.
+- Se revisaron las rutas de la imagen de marca, el favicon y las dos ilustraciones de la galería.
+- Se comprobó la sintaxis JavaScript con `node --check`.
+- El empaquetado del Site se validó y la versión 3 se publicó correctamente.
 - La salida de la terminal y el estado de finalización se inspeccionaron en el código.
 
 No se realizó una prueba automatizada de navegador en distintos dispositivos. Conviene revisar visualmente el sitio en escritorio y móvil y solicitar a varias personas que completen el reto antes de ampliar el catálogo.
