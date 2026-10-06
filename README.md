@@ -22,3 +22,24 @@ Abre el proyecto en Android Studio y ejecuta **Build > Make Project** para compi
 ## Idioma
 
 La documentación del laboratorio está escrita en español para personas hispanohablantes.
+
+## Práctica interactiva: puertos de red
+
+**[Abrir la práctica con terminal interactiva](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site)**
+
+La terminal del ejercicio está disponible aquí como página web independiente:
+
+- [Ver el código completo de la práctica](docs/laboratorio-puertos/index.html)
+- [Consultar el informe didáctico y técnico](docs/INFORME-LABORATORIO-WEB-01.md)
+
+La página funciona en el navegador al abrirla desde el enlace publicado. El HTML del repositorio permite revisar y reutilizar el ejercicio; GitHub muestra ese archivo como código, no lo ejecuta dentro del README. Para probarlo en local, descarga el repositorio y abre `docs/laboratorio-puertos/index.html` en un navegador.
+
+### Imágenes RINXI
+
+![Ilustración RINXI: red de dispositivos y puertos](docs/laboratorio-puertos/assets/rinxi-post-red-puertos.webp)
+
+![Ilustración RINXI: puertos abiertos y cerrados](docs/laboratorio-puertos/assets/rinxi-post-puertos-estados.webp)
+
+Las imágenes WebP optimizadas están guardadas en este repositorio. Los originales PNG de alta resolución se pueden [abrir y descargar desde el laboratorio](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site#gallery-title).
+
+> **Nota de seguridad:** la terminal es una simulación didáctica. No ejecuta Nmap ni realiza conexiones o escaneos reales.
