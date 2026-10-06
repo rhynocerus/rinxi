@@ -18,3 +18,12 @@ Sigue una consulta a `aula.rinxi.test`, localiza su registro A y compárala con 
 - **Guía, imágenes y comandos:** [práctica DNS](02-dns/README.md)
 - **HTML de la terminal:** [index.html](02-dns/index.html)
 - **Texto para LinkedIn:** [LINKEDIN.md](02-dns/LINKEDIN.md)
+
+## Práctica 03 · Rutas: leer una IP y una ruta de red
+
+Interpreta un prefijo CIDR, una tabla de rutas, la puerta de enlace y la selección de la ruta más específica.
+
+- **Probar:** https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/rutas/
+- **Guía, imágenes y comandos:** [práctica Rutas](03-rutas/README.md)
+- **HTML de la terminal:** [index.html](03-rutas/index.html)
+- **Texto para LinkedIn:** [LINKEDIN.md](03-rutas/LINKEDIN.md)
