@@ -23,6 +23,13 @@ Abre el proyecto en Android Studio y ejecuta **Build > Make Project** para compi
 
 La documentación del laboratorio está escrita en español para personas hispanohablantes.
 
+## Colección de prácticas interactivas
+
+[Explorar el índice de laboratorios RINXI](docs/practicas/README.md)
+
+- **Práctica 01 · Puertos:** [probar](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site) · [código](docs/laboratorio-puertos/index.html)
+- **Práctica 02 · DNS:** [probar](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/dns/) · [guía, imágenes y código](docs/practicas/02-dns/README.md)
+
 ## Práctica interactiva: puertos de red
 
 **[Abrir la práctica con terminal interactiva](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site)**
