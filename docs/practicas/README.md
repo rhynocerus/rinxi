@@ -27,3 +27,12 @@ Interpreta un prefijo CIDR, una tabla de rutas, la puerta de enlace y la selecci
 - **Guía, imágenes y comandos:** [práctica Rutas](03-rutas/README.md)
 - **HTML de la terminal:** [index.html](03-rutas/index.html)
 - **Texto para LinkedIn:** [LINKEDIN.md](03-rutas/LINKEDIN.md)
+
+## Práctica 04 · HTTP: solicitar una página e interpretar la respuesta
+
+Sigue una solicitud `GET`, interpreta `200 OK`, `Content-Type` y compara con `404 Not Found`.
+
+- **Probar:** https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/http/
+- **Guía, imágenes y comandos:** [práctica HTTP](04-http/README.md)
+- **HTML de la terminal:** [index.html](04-http/index.html)
+- **Texto para LinkedIn:** [LINKEDIN.md](04-http/LINKEDIN.md)
