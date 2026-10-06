@@ -93,3 +93,9 @@ No se realizó una prueba automatizada de navegador en distintos dispositivos. C
 ## Decisión de documentación
 
 El artículo queda como publicación independiente para que pueda compartirse directamente. El README del repositorio presenta el laboratorio y enlaza este informe, manteniendo visible que la aplicación Android y la práctica web son componentes relacionados, pero distintos.
+
+## Código y recursos en GitHub
+
+El repositorio incluye una copia autocontenida del artículo y de la terminal interactiva en `docs/laboratorio-puertos/index.html`, junto con el símbolo RINXI, el favicon y versiones WebP optimizadas de las dos ilustraciones. El README enlaza la práctica publicada y muestra las imágenes directamente en GitHub.
+
+GitHub presenta el archivo HTML como código en la vista del repositorio; la terminal ejecutable se abre desde el enlace público al laboratorio. También se puede descargar el repositorio y abrir el HTML localmente en un navegador. Los originales PNG de alta resolución continúan descargables desde el Site.
