@@ -31,6 +31,7 @@ La documentación del laboratorio está escrita en español para personas hispan
 - **Práctica 02 · DNS:** [probar](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/dns/) · [guía, imágenes y código](docs/practicas/02-dns/README.md)
 - **Práctica 03 · Rutas:** [probar](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/rutas/) · [guía, imágenes y código](docs/practicas/03-rutas/README.md)
 - **Práctica 04 · HTTP:** [probar](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site/http/) · [guía, imágenes y código](docs/practicas/04-http/README.md)
+- **Plantilla para nuevas prácticas:** [guion, terminal, seguridad y publicación](docs/practicas/PLANTILLA.md)
 
 ## Práctica interactiva: puertos de red
 

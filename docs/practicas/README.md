@@ -2,6 +2,8 @@
 
 Laboratorios breves en español para aprender conceptos de redes con una terminal simulada. Los comandos no ejecutan acciones reales ni generan tráfico.
 
+**[Crear la próxima práctica con la plantilla](PLANTILLA.md)**
+
 ## Práctica 01 · Puertos abiertos y cerrados
 
 Aprende a leer estados de puertos y servicios en una salida preparada tipo Nmap.
