@@ -62,6 +62,59 @@ Las marcas y elementos de identidad RINXI / RHYNUS Interactive Works se document
 
 ## Distribución Android
 
-La fuente oficial de versiones instalables será **GitHub Releases**. Las APK públicas se publicarán firmadas y acompañadas por su suma SHA-256.
+La fuente oficial de versiones instalables es **GitHub Releases**. Las APK públicas se publican firmadas y acompañadas por su suma SHA-256.
+
+### Verificar una descarga
+
+Cada Release incluye dos archivos:
+
+    RINXI-vX.Y.Z.apk
+    RINXI-vX.Y.Z.sha256
+
+Sustituye `vX.Y.Z` por la versión descargada. Por ejemplo, para la versión 0.2.1:
+
+    RINXI-v0.2.1.apk
+    RINXI-v0.2.1.sha256
+
+#### Linux
+
+Abre una terminal en la carpeta donde descargaste ambos archivos y ejecuta:
+
+    sha256sum -c RINXI-v0.2.1.sha256
+
+Si la descarga es íntegra, `sha256sum` indicará que la suma coincide o mostrará:
+
+    RINXI-v0.2.1.apk: OK
+
+También puedes calcular manualmente la huella:
+
+    sha256sum RINXI-v0.2.1.apk
+
+y compararla con la publicada en GitHub Releases.
+
+#### Android con Termux
+
+Estos comandos deben ejecutarse dentro de la aplicación Termux en el teléfono, no en la terminal del ordenador.
+
+Concede acceso al almacenamiento:
+
+    termux-setup-storage
+
+Después entra en la carpeta de descargas y verifica ambos archivos:
+
+    cd ~/storage/downloads
+    sha256sum -c RINXI-v0.2.1.sha256
+
+El resultado debe indicar que la suma coincide.
+
+### Certificado oficial de firma RINXI
+
+Las versiones oficiales de RINXI para Android mantienen la misma identidad criptográfica de firma.
+
+SHA-256 del certificado oficial:
+
+    e4e75b5fb4b6bb5d8b448d66dbe08b18d91bfe5f7e6b43b99538dc71530b04a2
+
+La suma SHA-256 de la APK cambia cuando cambia la aplicación. La huella del certificado permite comprobar la continuidad de la identidad de firma de las versiones oficiales de RINXI.
 
 RINXI está preparando compatibilidad de distribución mediante **Obtainium** y una futura solicitud de inclusión en **F-Droid**.
