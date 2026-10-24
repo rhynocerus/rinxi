@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -210,6 +211,36 @@ public class MainActivity extends Activity {
                 Gravity.CENTER_VERTICAL
         );
 
+        ImageView mark =
+                new ImageView(this);
+
+        mark.setImageResource(
+                R.drawable.rinxi_monogram
+        );
+
+        mark.setContentDescription(
+                "RINXI · Rhynus Interactive Works"
+        );
+
+        mark.setScaleType(
+                ImageView.ScaleType.FIT_CENTER
+        );
+
+        LinearLayout.LayoutParams markParams =
+                new LinearLayout.LayoutParams(
+                        dp(48),
+                        dp(48)
+                );
+
+        markParams.setMargins(
+                0,
+                0,
+                dp(12),
+                0
+        );
+
+        header.addView(mark, markParams);
+
         LinearLayout titles =
                 new LinearLayout(this);
 
@@ -227,24 +258,28 @@ public class MainActivity extends Activity {
                 Typeface.BOLD
         );
 
-        title.setTextSize(29);
+        title.setTextSize(25);
+
+        title.setLetterSpacing(0.10f);
 
         title.setTextColor(
-                RinxiColors.CYAN
+                RinxiColors.TEXT
         );
 
         TextView subtitle =
                 new TextView(this);
 
         subtitle.setText(
-                "SYSTEM PROBE // v0.2"
+                "RHYNUS INTERACTIVE WORKS"
         );
 
         subtitle.setTypeface(
-                ubuntu
+                ubuntuMono
         );
 
-        subtitle.setTextSize(11);
+        subtitle.setTextSize(9);
+
+        subtitle.setLetterSpacing(0.08f);
 
         subtitle.setTextColor(
                 RinxiColors.MUTED

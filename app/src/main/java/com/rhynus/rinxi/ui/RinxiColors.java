@@ -7,32 +7,32 @@ public final class RinxiColors {
     private RinxiColors() {}
 
     public static final int BG =
-            Color.rgb(10, 13, 14);
+            Color.rgb(7, 19, 16);       // #071310
 
     public static final int PANEL =
-            Color.rgb(16, 23, 25);
+            Color.rgb(12, 27, 22);      // #0C1B16
 
     public static final int PANEL_ALT =
-            Color.rgb(20, 30, 33);
+            Color.rgb(16, 43, 33);      // #102B21
 
     public static final int TEXT =
-            Color.rgb(230, 237, 240);
+            Color.rgb(245, 246, 245);   // #F5F6F5
 
     public static final int MUTED =
-            Color.rgb(126, 147, 155);
+            Color.rgb(145, 170, 160);   // #91AAA0
 
     public static final int CYAN =
-            Color.rgb(101, 214, 232);
+            Color.rgb(73, 242, 174);    // RINXI mint #49F2AE
 
     public static final int GREEN =
-            Color.rgb(127, 224, 163);
+            Color.rgb(73, 242, 174);    // RINXI mint #49F2AE
 
     public static final int AMBER =
-            Color.rgb(230, 197, 107);
+            Color.rgb(255, 211, 122);
 
     public static final int RED =
-            Color.rgb(241, 124, 124);
+            Color.rgb(255, 136, 136);
 
     public static final int GRID =
-            Color.rgb(37, 53, 59);
+            Color.rgb(36, 66, 54);
 }
