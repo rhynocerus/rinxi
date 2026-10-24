@@ -23,8 +23,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +38,6 @@ public class MainActivity extends Activity {
     private EditText commandInput;
     private ScrollView terminalScroll;
 
-    private Typeface ubuntu;
     private Typeface ubuntuMono;
 
     private RinxiShell shell;
@@ -58,12 +57,6 @@ public class MainActivity extends Activity {
                 RinxiColors.BG
         );
 
-        ubuntu =
-                getResources()
-                        .getFont(
-                                R.font.ubuntu
-                        );
-
         ubuntuMono =
                 getResources()
                         .getFont(
@@ -75,18 +68,18 @@ public class MainActivity extends Activity {
 
         prompt =
                 "rinxi@"
-                + Build.MODEL
-                + ":~$ ";
+                        + Build.MODEL
+                        + ":~$ ";
 
         createInterface();
 
         terminal.setText(
                 "RINXI SYSTEM CONSOLE v0.2\n"
-                + "LOCAL // NO ROOT // NO INTERNET\n"
-                + "\n"
-                + "Type 'help' or press FULL.\n"
-                + "\n"
-                + prompt
+                        + "LOCAL // NO ROOT // NO INTERNET\n"
+                        + "\n"
+                        + "Type 'help' or press FULL.\n"
+                        + "\n"
+                        + prompt
         );
 
         showIntro();
@@ -106,10 +99,10 @@ public class MainActivity extends Activity {
         );
 
         root.setPadding(
-                dp(14),
                 dp(10),
-                dp(14),
-                dp(10)
+                dp(6),
+                dp(10),
+                dp(6)
         );
 
         root.setFitsSystemWindows(true);
@@ -147,15 +140,15 @@ public class MainActivity extends Activity {
         terminal.setTextIsSelectable(true);
 
         terminal.setPadding(
-                dp(12),
-                dp(12),
-                dp(12),
-                dp(24)
+                dp(10),
+                dp(10),
+                dp(10),
+                dp(20)
         );
 
         terminal.setLineSpacing(
                 0,
-                1.08f
+                1.06f
         );
 
         GradientDrawable terminalBg =
@@ -200,96 +193,142 @@ public class MainActivity extends Activity {
 
     private View createHeader() {
 
-        LinearLayout header =
+        LinearLayout wrap =
                 new LinearLayout(this);
 
-        header.setOrientation(
+        wrap.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        /*
+         * Primera línea:
+         *
+         * [ LOGO RINXI ] [       LOGO RIW OFICIAL       ]
+         *
+         * Conservamos el isotipo de RINXI.
+         * Eliminamos solamente los textos redundantes.
+         */
+        LinearLayout logos =
+                new LinearLayout(this);
+
+        logos.setOrientation(
                 LinearLayout.HORIZONTAL
         );
 
-        header.setGravity(
+        logos.setGravity(
                 Gravity.CENTER_VERTICAL
         );
 
-        ImageView mark =
+        ImageView rinxiLogo =
                 new ImageView(this);
 
-        mark.setImageResource(
+        rinxiLogo.setImageResource(
                 R.drawable.rinxi_monogram
         );
 
-        mark.setContentDescription(
-                "RINXI · Rhynus Interactive Works"
+        rinxiLogo.setContentDescription(
+                "RINXI"
         );
 
-        mark.setScaleType(
+        rinxiLogo.setAdjustViewBounds(true);
+
+        rinxiLogo.setScaleType(
                 ImageView.ScaleType.FIT_CENTER
         );
 
-        LinearLayout.LayoutParams markParams =
+        LinearLayout.LayoutParams rinxiParams =
                 new LinearLayout.LayoutParams(
                         dp(48),
                         dp(48)
                 );
 
-        markParams.setMargins(
+        rinxiParams.setMargins(
                 0,
                 0,
-                dp(12),
+                dp(8),
                 0
         );
 
-        header.addView(mark, markParams);
+        logos.addView(
+                rinxiLogo,
+                rinxiParams
+        );
 
-        LinearLayout titles =
+        /*
+         * RIW ocupa TODO el ancho restante.
+         * Así gana mucha presencia sin deformarse
+         * ni salirse de la pantalla.
+         */
+        ImageView riwLogo =
+                new ImageView(this);
+
+        riwLogo.setImageResource(
+                R.drawable.riw_logo_autorizado
+        );
+
+        riwLogo.setContentDescription(
+                "RHYNUS Interactive Works"
+        );
+
+        riwLogo.setAdjustViewBounds(true);
+
+        riwLogo.setScaleType(
+                ImageView.ScaleType.FIT_END
+        );
+
+        LinearLayout.LayoutParams riwParams =
+                new LinearLayout.LayoutParams(
+                        0,
+                        dp(122),
+                        1
+                );
+
+        logos.addView(
+                riwLogo,
+                riwParams
+        );
+
+        wrap.addView(logos);
+
+        /*
+         * Segunda línea compacta:
+         *
+         * SYSTEM PROBE // v0.2              ● LOCAL
+         */
+        LinearLayout statusRow =
                 new LinearLayout(this);
 
-        titles.setOrientation(
-                LinearLayout.VERTICAL
+        statusRow.setOrientation(
+                LinearLayout.HORIZONTAL
         );
 
-        TextView title =
+        statusRow.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
+
+        TextView status =
                 new TextView(this);
 
-        title.setText("RINXI");
-
-        title.setTypeface(
-                ubuntu,
-                Typeface.BOLD
+        status.setText(
+                "SYSTEM PROBE // v0.2"
         );
 
-        title.setTextSize(25);
-
-        title.setLetterSpacing(0.10f);
-
-        title.setTextColor(
-                RinxiColors.TEXT
-        );
-
-        TextView subtitle =
-                new TextView(this);
-
-        subtitle.setText(
-                "RHYNUS INTERACTIVE WORKS"
-        );
-
-        subtitle.setTypeface(
+        status.setTypeface(
                 ubuntuMono
         );
 
-        subtitle.setTextSize(9);
+        status.setTextSize(8);
 
-        subtitle.setLetterSpacing(0.08f);
+        status.setLetterSpacing(
+                0.04f
+        );
 
-        subtitle.setTextColor(
+        status.setTextColor(
                 RinxiColors.MUTED
         );
 
-        titles.addView(title);
-        titles.addView(subtitle);
-
-        header.addView(
-                titles,
+        statusRow.addView(
+                status,
                 new LinearLayout.LayoutParams(
                         0,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -307,15 +346,17 @@ public class MainActivity extends Activity {
                 Typeface.BOLD
         );
 
-        local.setTextSize(11);
+        local.setTextSize(9);
 
         local.setTextColor(
                 RinxiColors.GREEN
         );
 
-        header.addView(local);
+        statusRow.addView(local);
 
-        return header;
+        wrap.addView(statusRow);
+
+        return wrap;
     }
 
     private View createCommandBar() {
@@ -334,11 +375,15 @@ public class MainActivity extends Activity {
                 LinearLayout.HORIZONTAL
         );
 
+        row.setGravity(
+                Gravity.CENTER_VERTICAL
+        );
+
         row.setPadding(
                 0,
-                dp(10),
+                dp(4),
                 0,
-                dp(5)
+                dp(2)
         );
 
         addCommandButton(
@@ -409,11 +454,15 @@ public class MainActivity extends Activity {
                 LinearLayout.HORIZONTAL
         );
 
+        row.setGravity(
+                Gravity.START
+        );
+
         row.setPadding(
                 0,
                 0,
                 0,
-                dp(6)
+                dp(3)
         );
 
         Button copy =
@@ -467,7 +516,7 @@ public class MainActivity extends Activity {
 
         row.setPadding(
                 0,
-                dp(8),
+                dp(5),
                 0,
                 0
         );
@@ -482,7 +531,7 @@ public class MainActivity extends Activity {
                 Typeface.BOLD
         );
 
-        promptView.setTextSize(15);
+        promptView.setTextSize(14);
 
         promptView.setTextColor(
                 RinxiColors.GREEN
@@ -499,7 +548,7 @@ public class MainActivity extends Activity {
                 ubuntuMono
         );
 
-        commandInput.setTextSize(14);
+        commandInput.setTextSize(13);
 
         commandInput.setTextColor(
                 RinxiColors.TEXT
@@ -518,10 +567,10 @@ public class MainActivity extends Activity {
         );
 
         commandInput.setPadding(
-                dp(8),
                 dp(7),
-                dp(8),
-                dp(7)
+                dp(4),
+                dp(7),
+                dp(4)
         );
 
         commandInput.setImeOptions(
@@ -549,7 +598,7 @@ public class MainActivity extends Activity {
                 commandInput,
                 new LinearLayout.LayoutParams(
                         0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        dp(34),
                         1
                 )
         );
@@ -570,6 +619,16 @@ public class MainActivity extends Activity {
         return row;
     }
 
+    /*
+     * Botones de comandos:
+     * FULL SYS CPU MEM DISK NET SEC SNS JSON
+     *
+     * Los hacemos realmente compactos:
+     * - texto 9sp
+     * - altura fija 25dp
+     * - padding mínimo
+     * - separación 2dp
+     */
     private void addCommandButton(
             LinearLayout row,
             String label,
@@ -588,20 +647,29 @@ public class MainActivity extends Activity {
                 Typeface.BOLD
         );
 
-        button.setTextSize(11);
+        button.setTextSize(9);
 
         button.setTextColor(
                 RinxiColors.CYAN
         );
 
         button.setMinHeight(0);
+        button.setMinimumHeight(0);
+
         button.setMinWidth(0);
+        button.setMinimumWidth(0);
+
+        button.setIncludeFontPadding(false);
+
+        button.setGravity(
+                Gravity.CENTER
+        );
 
         button.setPadding(
-                dp(12),
-                dp(7),
-                dp(12),
-                dp(7)
+                dp(6),
+                0,
+                dp(6),
+                0
         );
 
         GradientDrawable bg =
@@ -625,13 +693,13 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
+                        dp(25)
                 );
 
         params.setMargins(
                 0,
                 0,
-                dp(5),
+                dp(2),
                 0
         );
 
@@ -644,6 +712,11 @@ public class MainActivity extends Activity {
         row.addView(button);
     }
 
+    /*
+     * COPY SHARE HELP CLEAR y EXEC
+     *
+     * Más compactos todavía.
+     */
     private Button utilityButton(
             String label
     ) {
@@ -659,20 +732,29 @@ public class MainActivity extends Activity {
                 ubuntuMono
         );
 
-        button.setTextSize(10);
+        button.setTextSize(8);
 
         button.setTextColor(
                 RinxiColors.MUTED
         );
 
         button.setMinHeight(0);
+        button.setMinimumHeight(0);
+
         button.setMinWidth(0);
+        button.setMinimumWidth(0);
+
+        button.setIncludeFontPadding(false);
+
+        button.setGravity(
+                Gravity.CENTER
+        );
 
         button.setPadding(
-                dp(9),
-                dp(4),
-                dp(9),
-                dp(4)
+                dp(6),
+                0,
+                dp(6),
+                0
         );
 
         GradientDrawable bg =
@@ -687,19 +769,22 @@ public class MainActivity extends Activity {
                 RinxiColors.GRID
         );
 
+        bg.setCornerRadius(
+                dp(2)
+        );
+
         button.setBackground(bg);
 
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(
-                        0,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        1
+                        dp(23)
                 );
 
         params.setMargins(
                 0,
                 0,
-                dp(4),
+                dp(3),
                 0
         );
 
@@ -725,7 +810,7 @@ public class MainActivity extends Activity {
 
         if (
                 command == null
-                || command.trim().isEmpty()
+                        || command.trim().isEmpty()
         ) {
 
             return;
@@ -759,6 +844,7 @@ public class MainActivity extends Activity {
         current += result.text;
 
         if (!current.endsWith("\n")) {
+
             current += "\n";
         }
 
@@ -838,11 +924,11 @@ public class MainActivity extends Activity {
                 )
                 .setMessage(
                         "System information is collected locally.\n\n"
-                        + "NO ROOT\n"
-                        + "NO INTERNET PERMISSION\n"
-                        + "API-BACKED SAFE SHELL\n\n"
-                        + "Restricted information is reported, "
-                        + "never guessed."
+                                + "NO ROOT\n"
+                                + "NO INTERNET PERMISSION\n"
+                                + "API-BACKED SAFE SHELL\n\n"
+                                + "Restricted information is reported, "
+                                + "never guessed."
                 )
                 .setNegativeButton(
                         "TERMINAL",
