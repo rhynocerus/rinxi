@@ -53,3 +53,15 @@ La página funciona en el navegador al abrirla desde el enlace publicado. El HTM
 Las imágenes WebP optimizadas están guardadas en este repositorio. Los originales PNG de alta resolución se pueden [abrir y descargar desde el laboratorio](https://rinxi-laboratorio-puertos.rhynus.chatgpt.site#gallery-title).
 
 > **Nota de seguridad:** la terminal es una simulación didáctica. No ejecuta Nmap ni realiza conexiones o escaneos reales.
+
+## Licencia
+
+El código fuente de RINXI se distribuye bajo **GNU General Public License v3.0 o posterior (GPL-3.0-or-later)**. Consulta [LICENSE](LICENSE).
+
+Las marcas y elementos de identidad RINXI / RHYNUS Interactive Works se documentan por separado en [TRADEMARKS.md](TRADEMARKS.md). La licencia de los recursos gráficos y de las fuentes incluidas se detalla en [ASSETS.md](ASSETS.md).
+
+## Distribución Android
+
+La fuente oficial de versiones instalables será **GitHub Releases**. Las APK públicas se publicarán firmadas y acompañadas por su suma SHA-256.
+
+RINXI está preparando compatibilidad de distribución mediante **Obtainium** y una futura solicitud de inclusión en **F-Droid**.
