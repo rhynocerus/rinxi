@@ -920,22 +920,22 @@ public class MainActivity extends Activity {
 
         new AlertDialog.Builder(this)
                 .setTitle(
-                        "RINXI // LOCAL PROBE"
+                        "RINXI // SONDEO LOCAL"
                 )
                 .setMessage(
-                        "System information is collected locally.\n\n"
-                                + "NO ROOT\n"
-                                + "NO INTERNET PERMISSION\n"
-                                + "API-BACKED SAFE SHELL\n\n"
-                                + "Restricted information is reported, "
-                                + "never guessed."
+                        "La información del sistema se recopila localmente.\n\n"
+                                + "SIN ROOT\n"
+                                + "SIN PERMISO DE INTERNET\n"
+                                + "CONSOLA SEGURA BASADA EN API\n\n"
+                                + "La información restringida se indica como tal; "
+                                + "nunca se inventa."
                 )
                 .setNegativeButton(
                         "TERMINAL",
                         null
                 )
                 .setPositiveButton(
-                        "FULL PROBE",
+                        "SONDEO COMPLETO",
                         (dialog, which) ->
                                 executeCommand(
                                         "rinxi"
