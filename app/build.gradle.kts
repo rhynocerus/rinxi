@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.rhynus.rinxi"
-        minSdk = 26
+        minSdk = 23
         targetSdk = 34
         versionCode = 4
         versionName = "0.2.2"
