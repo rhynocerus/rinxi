@@ -16,6 +16,7 @@ import android.os.StatFs;
 import android.system.Os;
 import android.system.StructUtsname;
 import android.util.DisplayMetrics;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -152,7 +153,7 @@ public class SystemProbe {
 
         r.append(line(
                 "ABI",
-                String.join(
+                TextUtils.join(
                         ", ",
                         Build.SUPPORTED_ABIS
                 )
@@ -621,18 +622,28 @@ public class SystemProbe {
                 "NOT REQUESTED"
         ));
 
-        try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            try {
+
+                r.append(line(
+                        "Hardware serial",
+                        Build.getSerial()
+                ));
+
+            } catch (SecurityException e) {
+
+                r.append(line(
+                        "Hardware serial",
+                        "[RESTRICTED]"
+                ));
+            }
+
+        } else {
 
             r.append(line(
                     "Hardware serial",
-                    Build.getSerial()
-            ));
-
-        } catch (SecurityException e) {
-
-            r.append(line(
-                    "Hardware serial",
-                    "[RESTRICTED]"
+                    "[RESTRICTED / LEGACY]"
             ));
         }
 
