@@ -57,11 +57,19 @@ public class MainActivity extends Activity {
                 RinxiColors.BG
         );
 
-        ubuntuMono =
-                getResources()
-                        .getFont(
-                                R.font.ubuntu_mono
-                        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ubuntuMono =
+                    getResources()
+                            .getFont(
+                                    R.font.ubuntu_mono
+                            );
+        } else {
+            ubuntuMono =
+                    Typeface.create(
+                            "monospace",
+                            Typeface.NORMAL
+                    );
+        }
 
         shell =
                 new RinxiShell(this);
